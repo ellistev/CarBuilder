@@ -20,7 +20,6 @@ namespace CarBuilder
                 {
                     BuildCar(dependenciesPath);
                 }
-
             }
             else
             {
@@ -33,9 +32,7 @@ namespace CarBuilder
         private static void BuildCar(string dependenciesPath)
         {
             //builds the car
-
-            StreamReader input;
-            input = File.OpenText(dependenciesPath);
+            var input = File.OpenText(dependenciesPath);
             DependencySorter<String> sorter = new DependencySorter<string>(); 
             
             for (string line; (line = input.ReadLine()) != null; )
