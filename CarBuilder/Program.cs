@@ -44,7 +44,7 @@ namespace CarBuilder
                 var dependantObject = splitDependancy[1].Trim();
                 sorter.AddObjects(objectName);
                 sorter.AddObjects(dependantObject);
-                sorter.SetDependencies(objectName, dependantObject);
+                sorter.SetDependencies(dependantObject, objectName);
                 Console.WriteLine(line);
             }
 
