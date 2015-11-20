@@ -50,8 +50,13 @@ namespace CarBuilder
 
             var result =  sorter.Sort();
 
-            Console.Write(result);
+            
+            foreach (var val in result)
+            {
+                Console.Write(val + "\n");
+            }
 
+            Console.Write(result);
         }
     }
 }
