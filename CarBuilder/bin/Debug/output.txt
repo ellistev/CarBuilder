@@ -1,0 +1,7 @@
+frame,wheels
+body
+back seat,left seat,right seat
+back bumper,front bumper
+dashboard,steering wheel
+gear shifter
+windows

@@ -57,6 +57,10 @@ namespace CarBuilder
             {
                 var result = sorter.SortDependancies();
 
+                StreamWriter file = new System.IO.StreamWriter("output.txt");
+                result.ForEach(file.WriteLine);
+                file.Close();
+
                 foreach (var val in result)
                 {
                     Console.Write(val + "\n");

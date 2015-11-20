@@ -5,32 +5,44 @@ namespace CarBuilder
 {
     public class DependencySorter<T>
     {
-        private readonly Dictionary<T, Dictionary<T, object>> _carPartArray = new Dictionary<T, Dictionary<T, object>>();
+        private readonly Dictionary<String, Dictionary<String, object>> _carPartArray = new Dictionary<String, Dictionary<String, object>>();
+        private List<String> sortResult;
 
-        public T[] SortDependancies()
+        public DependencySorter()
         {
-            var sortResult = new List<T>(_carPartArray.Count);
+            sortResult = new List<String>(_carPartArray.Count);  
+        }
 
+        public List<String> SortDependancies()
+        {
             while (_carPartArray.Count > 0)
             {
-                T loneObject;
+                List<String> loneObjects;
 
-                if (!GetLoneObject(out loneObject))
+                if (!GetLoneObject(out loneObjects))
                 {
                     throw new CircularException();
                 }
 
-                sortResult.Add(loneObject);
-
-                DeleteLoneObject(loneObject);
+                foreach (var loneObject in loneObjects)
+                {
+                    if (loneObject != null)
+                    {
+                        DeleteLoneObject(loneObject); 
+                    }
+                }
             }
 
-            return sortResult.ToArray();
+            return sortResult;
         }
 
-        private bool GetLoneObject(out T loneResult)
+        private bool GetLoneObject(out List<String> loneResult)
         {//search through array of parts and return the first that has no dependancies remaining
-
+            
+            bool foundLone = false;
+            int loneResultSize = 0;
+            loneResult = new List<string>();
+            
             foreach (var dependancy in _carPartArray)
             {
                 if (dependancy.Value.Count > 0)
@@ -39,16 +51,27 @@ namespace CarBuilder
                 }
 
                 //this dependancy is lone, return this part
-                loneResult = dependancy.Key;
-                Console.Write(dependancy.Key + ",");
-                //return true;
+                loneResult.Add(dependancy.Key);
+
+                foundLone = true;
+            
             }
-            Console.Write("\n");
-            loneResult = default(T);
+
+            if (foundLone)
+            {
+                loneResult.Sort();
+                String outputLine = string.Join(",", loneResult);
+                
+                sortResult.Add(outputLine);
+                //Console.Write(outputLine + "\n");
+                return true;
+            }
+            
+            loneResult[0] = default(String);
             return false;
         }
 
-        private void DeleteLoneObject(T obj)
+        private void DeleteLoneObject(String obj)
         {//remove this lone part/object, so we do not see it in the results again.
 
             _carPartArray.Remove(obj);
@@ -59,7 +82,7 @@ namespace CarBuilder
             }
         }
 
-        public void AddCarPart(params T[] objects)
+        public void AddCarPart(params String[] objects)
         {//add car part object to array
 
             foreach (var part in objects)
@@ -71,11 +94,11 @@ namespace CarBuilder
                 }
 
                 //add if not a duplicate part
-                _carPartArray.Add(part, new Dictionary<T, object>());
+                _carPartArray.Add(part, new Dictionary<String, object>());
             }
         }
 
-        public void AddDependantRelationship(T dependantPart, params T[] dependsOnObjects)
+        public void AddDependantRelationship(String dependantPart, params String[] dependsOnObjects)
         {
             var dependenciesForPart = _carPartArray[dependantPart];
 
