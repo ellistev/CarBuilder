@@ -99,7 +99,7 @@ namespace CarBuilder
 
                     // add to result
                     result.Add(independentObject);
-
+                    
                     // delete processed object
                     this.DeleteObject(independentObject);
                 }
@@ -130,12 +130,19 @@ namespace CarBuilder
                     // if the object contains any dependency
                     if (pair.Value.Count > 0)
                     {
+
+                        foreach (var val in pair.Value)
+                        {
+                            Console.Write(val);
+                        }
+
                         // has dependency, skip it
                         continue;
                     }
 
                     // found
                     result = pair.Key;
+                    Console.Write(result);
                     return true;
                 }
 
