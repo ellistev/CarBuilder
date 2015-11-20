@@ -1,0 +1,7 @@
+C:\Users\selliott\Documents\GitHub\CarBuilder\CarBuilder\CarBuilder\bin\Debug\CarBuilder.exe.config
+C:\Users\selliott\Documents\GitHub\CarBuilder\CarBuilder\bin\Debug\CarBuilder.exe.config
+C:\Users\selliott\Documents\GitHub\CarBuilder\CarBuilder\bin\Debug\CarBuilder.exe
+C:\Users\selliott\Documents\GitHub\CarBuilder\CarBuilder\bin\Debug\CarBuilder.pdb
+C:\Users\selliott\Documents\GitHub\CarBuilder\CarBuilder\obj\Debug\CarBuilder.csprojResolveAssemblyReference.cache
+C:\Users\selliott\Documents\GitHub\CarBuilder\CarBuilder\obj\Debug\CarBuilder.exe
+C:\Users\selliott\Documents\GitHub\CarBuilder\CarBuilder\obj\Debug\CarBuilder.pdb

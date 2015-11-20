@@ -1,0 +1,11 @@
+frame -> body
+back bumper -> steering wheel
+wheels -> left seat
+body -> left seat
+back seat -> front bumper
+right seat -> back bumper
+body -> right seat
+back bumper -> dashboard
+dashboard -> gear shifter
+gear shifter -> windows
+body -> back seat
