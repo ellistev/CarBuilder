@@ -10,10 +10,7 @@ namespace CarBuilder
 {
     public class Program
     {
-        public static bool added = false;
-        
-
-        private static void Main(string[] args)
+       private static void Main(string[] args)
         {
            
             if (args != null && args.Length == 1)
@@ -27,36 +24,62 @@ namespace CarBuilder
             }
             else
             {
+                Console.ForegroundColor = ConsoleColor.Red;
                 Console.Write("Usage: CarBuilder [dependenciesfilePath]");
+                Console.ResetColor();
             }
         }
 
         private static void BuildCar(string dependenciesPath)
         {
+            //builds the car
+
             StreamReader input;
             input = File.OpenText(dependenciesPath);
-            TopologicalSorter<String> sorter = new TopologicalSorter<string>(); 
+            DependencySorter<String> sorter = new DependencySorter<string>(); 
             
             for (string line; (line = input.ReadLine()) != null; )
-            {
+            {//go through each line in input file, parse the dependencies, and add to the DependencySorter object
+
+                //split line based on dependancy
                 string[] splitDependancy = Regex.Split(line, "->");
+                
+                //trim the objects
                 var objectName = splitDependancy[0].Trim();
                 var dependantObject = splitDependancy[1].Trim();
-                sorter.AddObjects(objectName);
-                sorter.AddObjects(dependantObject);
-                sorter.SetDependencies(dependantObject, objectName);
-                Console.WriteLine(line);
-            }
 
-            var result =  sorter.Sort();
+                //add the parts required
+                sorter.AddCarPart(objectName);
+                sorter.AddCarPart(dependantObject);
 
-            
-            foreach (var val in result)
+                //add a dependancy relationship
+                sorter.AddDependantRelationship(dependantObject, objectName);
+                }
+
+            try
             {
-                Console.Write(val + "\n");
+                var result = sorter.SortDependancies();
+
+                foreach (var val in result)
+                {
+                    Console.Write(val + "\n");
+                }
+            }
+            catch (CircularException ce)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.Write("Error: " + ce.Message);
+                Console.ResetColor();
+            }
+            catch (Exception e)
+            {
+                
             }
 
-            Console.Write(result);
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.Write("\nOutput complete\nPress Return To Continue, Please");
+            Console.ResetColor();
+            Console.ReadLine();
         }
     }
 }

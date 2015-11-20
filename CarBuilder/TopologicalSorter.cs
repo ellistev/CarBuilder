@@ -1,103 +1,92 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
+
 namespace CarBuilder
 {
-    public class TopologicalSorter<T>
-        {
+    public class DependencySorter<T>
+    {
+        private readonly Dictionary<T, Dictionary<T, object>> carPartArray = new Dictionary<T, Dictionary<T, object>>();
 
-            private readonly Dictionary<T, Dictionary<T, object>> _matrix = new Dictionary<T, Dictionary<T, object>>();
+        public void AddCarPart(params T[] objects)
+        {//add car part object to array
 
-
-            public void AddObjects(params T[] objects)
+            foreach (var part in objects)
             {
-                Debug.Assert(objects != null);
-                Debug.Assert(objects.Length > 0);
-                foreach (T obj in objects)
+                //check that this is not a duplicate part
+                if (carPartArray.ContainsKey(part))
                 {
-                    if (_matrix.ContainsKey(obj))
-                    {
-                        return;
-                    }
-                    else
-                    {
-                        _matrix.Add(obj, new Dictionary<T, object>());    
-                    }
-                    
-                }
-            }
-
-            public void SetDependencies(T obj, params T[] dependsOnObjects)
-            {
-                Debug.Assert(dependsOnObjects != null);
-
-                Dictionary<T, object> dependencies = _matrix[obj];
-
-                foreach (T dependsOnObject in dependsOnObjects)
-                {
-                    dependencies.Add(dependsOnObject, null);
-                }
-            }
-
-            public T[] Sort()
-            {
-                List<T> result = new List<T>(_matrix.Count);
-
-                while (_matrix.Count > 0)
-                {
-                    T independentObject;
-                    if (!this.GetIndependentObject(out independentObject))
-                    {
-                        throw new CircularReferenceException();
-                    }
-
-                    result.Add(independentObject);
-                    
-                    this.DeleteObject(independentObject);
+                    return;
                 }
 
-                return result.ToArray();
+                //add if not a duplicate part
+                carPartArray.Add(part, new Dictionary<T, object>());
             }
-
-
-
-            private bool GetIndependentObject(out T result)
-            {
-                foreach (KeyValuePair<T, Dictionary<T, object>> pair in _matrix)
-                {
-                    if (pair.Value.Count > 0)
-                    {
-
-                        continue;
-                    }
-
-                    result = pair.Key;
-                    return true;
-                }
-
-                result = default(T);
-                return false;
-            }
-
-
-            private void DeleteObject(T obj)
-            {
-                _matrix.Remove(obj);
-
-                foreach (KeyValuePair<T, Dictionary<T, object>> pair in _matrix)
-                {
-                    pair.Value.Remove(obj);
-                }
-            }
-
-
         }
 
-        public class CircularReferenceException : Exception
+        public void AddDependantRelationship(T obj, params T[] dependsOnObjects)
         {
-            public CircularReferenceException()
-                : base("Circular reference found.")
-            {            
+            var dependencies = carPartArray[obj];
+
+            //built to allow for multiple dependancies
+            foreach (var dependsOnObject in dependsOnObjects)
+            {
+                dependencies.Add(dependsOnObject, null);
+            }
+        }
+
+        public T[] SortDependancies()
+        {
+            var result = new List<T>(carPartArray.Count);
+
+            while (carPartArray.Count > 0)
+            {
+                T loneObject;
+                if (!GetLoneObject(out loneObject))
+                {
+                    throw new CircularException();
+                }
+
+                result.Add(loneObject);
+
+                DeleteLoneObject(loneObject);
+            }
+
+            return result.ToArray();
+        }
+
+        private bool GetLoneObject(out T result)
+        {
+            foreach (var dependancy in carPartArray)
+            {
+                if (dependancy.Value.Count > 0)
+                {
+                    continue;
+                }
+
+                result = dependancy.Key;
+                return true;
+            }
+
+            result = default(T);
+            return false;
+        }
+
+        private void DeleteLoneObject(T obj)
+        {
+            carPartArray.Remove(obj);
+
+            foreach (var pair in carPartArray)
+            {
+                pair.Value.Remove(obj);
             }
         }
     }
+
+    public class CircularException : Exception
+    {
+        public CircularException()
+            : base("Circular exception: You have just caused an infinite loop.  Bad! \nCheck the input file for errors")
+        {
+        }
+    }
+}
