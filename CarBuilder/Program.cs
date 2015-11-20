@@ -15,31 +15,34 @@ namespace CarBuilder
         {
             StreamReader input;
             List<String> objects = new List<string>();
-            Dictionary<String, String> dependencies = new Dictionary<string, string>();
+            ITopologicSortable dependencies = new Dictionary<string, string>();
 
-            if (args != null && args.Length == 2)
+            if (args != null && args.Length == 1)
             {
-                var objectsPath = args[0];
-                var dependenciesPath = args[1];
-                if (File.Exists(objectsPath))
+                var dependenciesPath = args[0];
+                if (File.Exists(dependenciesPath))
                 {
-                    input = File.OpenText(objectsPath);
-
-                    for (string line; (line = input.ReadLine()) != null; )
-                    {
-                        objects.Add(line);
-                        Console.WriteLine(line);
-                    }
-
                     input = File.OpenText(dependenciesPath);
 
                     for (string line; (line = input.ReadLine()) != null; )
                     {
-                        string splitDependancy = line.Split(string,"->");
+
+                        var foo = new Foo();
+                        var bar = new Foo();
+                        var parent = new Foo();
+                        bar.DependsOn.Add(foo); // bar depends on foo; it will be sorted to come after foo
+                        parent.Children.Add(bar);
+                        parent.Children.Add(foo);
+                        parent.SortSelfAndDescendents(); // parent.Children now contains the sorted list
+
+                        string[] splitDependancy = Regex.Split(line,"->");
+
+                        dependencies.Add(splitDependancy[0].Trim(), splitDependancy[1].Trim());
                         Console.WriteLine(line);
                     }
                 }
 
+                var result = TSort<List<String>>(dependencies, dependencies, false); 
 
             }
             else
