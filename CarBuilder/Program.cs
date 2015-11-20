@@ -55,14 +55,16 @@ namespace CarBuilder
 
             try
             {
+                //now, finally sort the loaded user generated list of dependancies
                 var result = sorter.SortDependancies();
 
+                //output to a file named output.txt
                 StreamWriter file = new System.IO.StreamWriter("output.txt");
                 result.ForEach(file.WriteLine);
                 file.Close();
 
                 foreach (var val in result)
-                {
+                {//output to screen
                     Console.Write(val + "\n");
                 }
             }
@@ -74,7 +76,9 @@ namespace CarBuilder
             }
             catch (Exception e)
             {
-                
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.Write("Error: " + e.Message);
+                Console.ResetColor();
             }
 
             Console.ForegroundColor = ConsoleColor.Green;

@@ -50,7 +50,7 @@ namespace CarBuilder
                     continue;
                 }
 
-                //this dependancy is lone, return this part
+                //this dependancy is lone, add this to output line
                 loneResult.Add(dependancy.Key);
 
                 foundLone = true;
@@ -59,6 +59,7 @@ namespace CarBuilder
 
             if (foundLone)
             {
+                //sort the output line alphabetically
                 loneResult.Sort();
                 String outputLine = string.Join(",", loneResult);
                 
@@ -77,7 +78,7 @@ namespace CarBuilder
             _carPartArray.Remove(obj);
 
             foreach (var pair in _carPartArray)
-            {
+            {//remove this dependancy from any other potential dependancies
                 pair.Value.Remove(obj);
             }
         }
